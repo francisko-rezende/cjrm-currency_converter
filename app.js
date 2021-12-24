@@ -5,7 +5,7 @@ const currencyOneTimes = document.querySelector('[data-js="currency-one-times"]'
 const conversionPrecisionParagraph = document.querySelector('[data-js="conversion-precision"]')
 
 const APIKey = '9e3a6fd942b2712ab9af7ee0'
-let conversionRates
+let conversionRates = null
 
 const generateOptionElement = (currency, conversionRate, isSelected) =>
   isSelected 
