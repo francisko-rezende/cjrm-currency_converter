@@ -12,6 +12,17 @@ const generateOptionElement = (currency, conversionRate, isSelected) =>
     ? `<option value="${currency}"  data-conversion-rate="${conversionRate}" selected>${currency}</option>`
     : `<option value="${currency}" data-conversion-rate="${conversionRate}" >${currency}</option>`
 
+
+const generateUrl = (key, currency) => 
+  `https://v6.exchangerate-api.com/v6/${key}/latest/${currency}`
+
+const updateConversionRates = async (url) => {
+  const request = await fetch(url)
+  const data =  await request.json()
+
+  conversionRates = data.conversion_rates
+}
+
 const insertCurrencyOptionIntoDOM = ([currency, conversionRate]) => {
   const isUSD = currency === 'USD'
   const isBRL = currency === 'BRL'
@@ -23,16 +34,6 @@ const insertCurrencyOptionIntoDOM = ([currency, conversionRate]) => {
   conversionTargetCurrencySelect.innerHTML += isBRL 
   ? generateOptionElement(currency, conversionRate, true) 
   : generateOptionElement(currency, conversionRate, false)
-}
-
-const generateUrl = (key, currency) => 
-  `https://v6.exchangerate-api.com/v6/${key}/latest/${currency}`
-
-const updateConversionRates = async (url) => {
-  const request = await fetch(url)
-  const data =  await request.json()
-
-  conversionRates = data.conversion_rates
 }
 
 const populateCurrencySelectors = (conversionRates) => {
