@@ -46,6 +46,7 @@ const updateDisplayedInfo = () => {
   const formattedConversionResult = conversionRate.toFixed(2)
   
   convertedValueParagraph.textContent = `${formattedConversionResult}`
+  currencyOneTimes.value = 1
   conversionPrecisionParagraph.textContent = 
     `1 ${sourceCurrency} = ${conversionRate} ${targetCurrency}`
 }
