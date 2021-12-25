@@ -1,8 +1,8 @@
-const conversionSourceCurrencySelect = document.querySelector('[data-js="currency-one"]')
-const conversionTargetCurrencySelect = document.querySelector('[data-js="currency-two"]')
+const sourceCurrencySelect = document.querySelector('[data-js="currency-one"]')
+const targetCurrencySelect = document.querySelector('[data-js="currency-two"]')
 const convertedValueParagraph = document.querySelector('[data-js="converted-value"]')
 const currencyOneTimes = document.querySelector('[data-js="currency-one-times"]')
-const conversionPrecisionParagraph = document.querySelector('[data-js="conversion-precision"]')
+const precisionParagraph = document.querySelector('[data-js="conversion-precision"]')
 
 const APIKey = '9e3a6fd942b2712ab9af7ee0'
 let conversionRates = null
@@ -27,11 +27,11 @@ const insertCurrencyOptionIntoDOM = ([currency, conversionRate]) => {
   const isUSD = currency === 'USD'
   const isBRL = currency === 'BRL'
 
-  conversionSourceCurrencySelect.innerHTML += isUSD 
+  sourceCurrencySelect.innerHTML += isUSD 
   ? generateOptionElement(currency, conversionRate, true) 
   : generateOptionElement(currency, conversionRate, false)
   
-  conversionTargetCurrencySelect.innerHTML += isBRL 
+  targetCurrencySelect.innerHTML += isBRL 
   ? generateOptionElement(currency, conversionRate, true) 
   : generateOptionElement(currency, conversionRate, false)
 }
@@ -41,14 +41,14 @@ const populateCurrencySelectors = (conversionRates) => {
 }
 
 const updateDisplayedInfo = () => {
-  const targetCurrency = conversionTargetCurrencySelect.value
-  const sourceCurrency = conversionSourceCurrencySelect.value
+  const targetCurrency = targetCurrencySelect.value
+  const sourceCurrency = sourceCurrencySelect.value
   const conversionRate = conversionRates[targetCurrency]
   const formattedConversionResult = conversionRate.toFixed(2)
   
   convertedValueParagraph.textContent = `${formattedConversionResult}`
   currencyOneTimes.value = 1
-  conversionPrecisionParagraph.textContent = 
+  precisionParagraph.textContent = 
     `1 ${sourceCurrency} = ${conversionRate} ${targetCurrency}`
 }
 
@@ -57,7 +57,7 @@ const showConversionInfo = async (currency) => {
   await updateConversionRates(url)
 
   const isSourceCurrencySelectorEmpty = 
-    conversionSourceCurrencySelect.childElementCount === 0
+    sourceCurrencySelect.childElementCount === 0
 
   if (isSourceCurrencySelectorEmpty) {
     populateCurrencySelectors(conversionRates)
@@ -66,22 +66,28 @@ const showConversionInfo = async (currency) => {
   updateDisplayedInfo()
 }
 
-showConversionInfo('USD')
-
-currencyOneTimes.addEventListener('input', event => {
+const handleConversionQuantityChange = event => {
   const multiplier = event.target.value
-  const targetCurrency = conversionTargetCurrencySelect.value 
+  const targetCurrency = targetCurrencySelect.value 
   const conversionRate = conversionRates[targetCurrency]
   const formattedConversionResult = (multiplier * conversionRate).toFixed(2)
 
   convertedValueParagraph.textContent = `${formattedConversionResult}`
-})
+}
 
-conversionTargetCurrencySelect.addEventListener('input', () => {
+const handleTargetCurrencyChange = () => {
   updateDisplayedInfo()
-})
+}
 
-conversionSourceCurrencySelect.addEventListener('input', event => {
+const handleSourceCurrencyChange = event => {
   const newCurrency = event.target.value
   showConversionInfo(newCurrency)
-})
+}
+
+showConversionInfo('USD')
+
+currencyOneTimes.addEventListener('input', handleConversionQuantityChange)
+
+targetCurrencySelect.addEventListener('input', handleTargetCurrencyChange)
+
+sourceCurrencySelect.addEventListener('input', handleSourceCurrencyChange)
