@@ -7,10 +7,10 @@ const precisionParagraph = document.querySelector('[data-js="conversion-precisio
 const APIKey = '9e3a6fd942b2712ab9af7ee0'
 let conversionRates = null
 
-const generateOptionElement = (currency, conversionRate, isSelected) =>
+const generateOptionElement = (currency, isSelected) =>
   isSelected 
-    ? `<option value="${currency}"  data-conversion-rate="${conversionRate}" selected>${currency}</option>`
-    : `<option value="${currency}" data-conversion-rate="${conversionRate}" >${currency}</option>`
+    ? `<option value="${currency}" selected>${currency}</option>`
+    : `<option value="${currency}">${currency}</option>`
 
 
 const generateUrl = (key, currency) => 
@@ -23,22 +23,22 @@ const updateConversionRates = async (url) => {
   conversionRates = data.conversion_rates
 }
 
-const insertCurrencyOptionIntoDOM = ([currency, conversionRate]) => {
+const insertCurrencyOptionIntoDOM = (currency) => {
   const isUSD = currency === 'USD'
   const isBRL = currency === 'BRL'
-
+  
   sourceCurrencySelect.innerHTML += isUSD 
-  ? generateOptionElement(currency, conversionRate, true) 
-  : generateOptionElement(currency, conversionRate, false)
+    ? generateOptionElement(currency, true) 
+    : generateOptionElement(currency, false)
   
   targetCurrencySelect.innerHTML += isBRL 
-  ? generateOptionElement(currency, conversionRate, true) 
-  : generateOptionElement(currency, conversionRate, false)
+    ? generateOptionElement(currency, true) 
+    : generateOptionElement(currency, false)
 }
 
-const populateCurrencySelectors = (conversionRates) => {
-  Object.entries(conversionRates).forEach(insertCurrencyOptionIntoDOM)
-}
+const populateCurrencySelectors = (conversionRates) =>
+  Object.keys(conversionRates).forEach(insertCurrencyOptionIntoDOM)
+
 
 const updateDisplayedInfo = () => {
   const targetCurrency = targetCurrencySelect.value
