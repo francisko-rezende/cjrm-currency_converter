@@ -5,23 +5,26 @@ const currencyOneTimes = document.querySelector('[data-js="currency-one-times"]'
 const precisionParagraph = document.querySelector('[data-js="conversion-precision"]')
 
 const APIKey = '9e3a6fd942b2712ab9af7ee0'
-let conversionRates = null
+let conversionRateData = null
+
+const updateDisplayedInfo = () => {
+  const targetCurrency = targetCurrencySelect.value
+  const sourceCurrency = sourceCurrencySelect.value
+  const conversionRate = conversionRateData[targetCurrency]
+  const formattedConversionResult = conversionRate.toFixed(2)
+  const multiplier = currencyOneTimes.value
+  
+  convertedValueParagraph.textContent = `
+    ${multiplier * formattedConversionResult}`
+  
+    precisionParagraph.textContent = 
+    `1 ${sourceCurrency} = ${conversionRate} ${targetCurrency}`
+}
 
 const generateOptionElement = (currency, isSelected) =>
   isSelected 
     ? `<option value="${currency}" selected>${currency}</option>`
     : `<option value="${currency}">${currency}</option>`
-
-
-const generateUrl = (key, currency) => 
-  `https://v6.exchangerate-api.com/v6/${key}/latest/${currency}`
-
-const updateConversionRates = async (url) => {
-  const request = await fetch(url)
-  const data =  await request.json()
-
-  conversionRates = data.conversion_rates
-}
 
 const insertCurrencyOptionIntoDOM = (currency) => {
   const isUSD = currency === 'USD'
@@ -36,33 +39,28 @@ const insertCurrencyOptionIntoDOM = (currency) => {
     : generateOptionElement(currency, false)
 }
 
-const populateCurrencySelectors = (conversionRates) =>
-  Object.keys(conversionRates).forEach(insertCurrencyOptionIntoDOM)
+const populateCurrencySelectors = (conversionRateData) =>
+  Object.keys(conversionRateData).forEach(insertCurrencyOptionIntoDOM)
 
+const generateUrl = (key, currency) => 
+  `https://v6.exchangerate-api.com/v6/${key}/latest/${currency}`
 
-const updateDisplayedInfo = () => {
-  const targetCurrency = targetCurrencySelect.value
-  const sourceCurrency = sourceCurrencySelect.value
-  const conversionRate = conversionRates[targetCurrency]
-  const formattedConversionResult = conversionRate.toFixed(2)
-  const multiplier = currencyOneTimes.value
-  
-  convertedValueParagraph.textContent = `
-    ${multiplier * formattedConversionResult}`
-  
-    precisionParagraph.textContent = 
-    `1 ${sourceCurrency} = ${conversionRate} ${targetCurrency}`
+const updateConversionRateData = async (url) => {
+  const request = await fetch(url)
+  const data =  await request.json()
+
+  conversionRateData = data.conversion_rates
 }
 
 const showConversionInfo = async (currency) => {
   const url = generateUrl(APIKey, currency)
-  await updateConversionRates(url)
+  await updateConversionRateData(url)
 
   const isSourceCurrencySelectorEmpty = 
     sourceCurrencySelect.childElementCount === 0
 
   if (isSourceCurrencySelectorEmpty) {
-    populateCurrencySelectors(conversionRates)
+    populateCurrencySelectors(conversionRateData)
   }
 
   updateDisplayedInfo()
@@ -71,7 +69,7 @@ const showConversionInfo = async (currency) => {
 const handleConversionQuantityChange = event => {
   const multiplier = event.target.value
   const targetCurrency = targetCurrencySelect.value 
-  const conversionRate = conversionRates[targetCurrency]
+  const conversionRate = conversionRateData[targetCurrency]
   const formattedConversionResult = (multiplier * conversionRate).toFixed(2)
 
   convertedValueParagraph.textContent = `${formattedConversionResult}`
