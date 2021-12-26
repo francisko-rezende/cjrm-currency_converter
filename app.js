@@ -87,7 +87,5 @@ const handleSourceCurrencyChange = event => {
 showConversionInfo('USD')
 
 currencyOneTimes.addEventListener('input', handleConversionQuantityChange)
-
 targetCurrencySelect.addEventListener('input', handleTargetCurrencyChange)
-
 sourceCurrencySelect.addEventListener('input', handleSourceCurrencyChange)
