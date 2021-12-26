@@ -8,16 +8,15 @@ const APIKey = '9e3a6fd942b2712ab9af7ee0'
 let conversionRateData = null
 
 const updateDisplayedInfo = () => {
-  const targetCurrency = targetCurrencySelect.value
   const sourceCurrency = sourceCurrencySelect.value
+  const targetCurrency = targetCurrencySelect.value
   const conversionRate = conversionRateData[targetCurrency]
-  const formattedConversionResult = conversionRate.toFixed(2)
   const multiplier = currencyOneTimes.value
+  const formattedConversionResult = (multiplier * conversionRate).toFixed(2)
   
-  convertedValueParagraph.textContent = `
-    ${multiplier * formattedConversionResult}`
+  convertedValueParagraph.textContent = `${formattedConversionResult}`
   
-    precisionParagraph.textContent = 
+  precisionParagraph.textContent = 
     `1 ${sourceCurrency} = ${conversionRate} ${targetCurrency}`
 }
 
@@ -67,9 +66,9 @@ const showConversionInfo = async (currency) => {
 }
 
 const handleConversionQuantityChange = event => {
-  const multiplier = event.target.value
   const targetCurrency = targetCurrencySelect.value 
   const conversionRate = conversionRateData[targetCurrency]
+  const multiplier = event.target.value
   const formattedConversionResult = (multiplier * conversionRate).toFixed(2)
 
   convertedValueParagraph.textContent = `${formattedConversionResult}`
@@ -81,6 +80,7 @@ const handleTargetCurrencyChange = () => {
 
 const handleSourceCurrencyChange = event => {
   const newCurrency = event.target.value
+  
   showConversionInfo(newCurrency)
 }
 
